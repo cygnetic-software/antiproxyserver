@@ -102,14 +102,22 @@ app.post("/teacher-action", (req, res) => {
   const pending = req.body;
   if (pending) {
     if (pending.action == "approved") {
-      connection
-        .query(
-          `INSERT INTO teachers VALUES (${pending.teacher.teacher_uid}, ${pending.teacher.teacher_name}, ${pending.teacher.teacher_email}, ${pending.teacher.teacher_phone});`
-        )
-        .on("error", (e) => {
-          console.log(e);
-          res.status(500).json({ err: "Error approving teacher!" });
-        });
+      connection.query(
+        `INSERT INTO teachers VALUES (?, ?, ?, ?);`,
+        [
+          pending.teacher.teacher_uid,
+          pending.teacher.teacher_name,
+          pending.teacher.teacher_email,
+          pending.teacher.teacher_phone,
+        ],
+        (err, res) => {
+          if (err) {
+            console.log(err);
+            res.status(500).json({ err: "Error approving teacher!" });
+            throw err;
+          }
+        }
+      );
       db.collection("pending")
         .doc(pending.teacher.teacher_uid)
         .delete()
