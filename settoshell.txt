@@ -1,0 +1,7 @@
+
+npm command to run
+firebase init
+npm install firebase-admin --save
+
+shell command
+export GOOGLE_APPLICATION_CREDENTIALS="/Users/zax/Desktop/CODE/react/testserver2/antiproxy-7bb3f-firebase-adminsdk-6u4lx-1b19996c5e.json"

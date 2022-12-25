@@ -1,0 +1,19 @@
+teacher_req_body={
+    teacher_name
+    teacher_phone
+    teacher_email
+    teacher_password
+}
+
+pending_req_body={
+    action{approved,rejected}
+    teacher
+}
+
+teacher={
+    teacher_name
+    teacher_phone
+    teacher_email
+    teacher_password
+    teacher_uid
+}
