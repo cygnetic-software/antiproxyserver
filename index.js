@@ -22,6 +22,7 @@ const connection = mysql.createConnection({
   user: "zax",
   password: "1234",
   host: "localhost",
+  database: "antiproxyDB",
 });
 
 connection.connect();
