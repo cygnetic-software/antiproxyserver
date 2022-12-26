@@ -1,34 +1,9 @@
-const mysql = require("mysql");
 const express = require("express");
-const auth = require("firebase-admin/auth");
 const cors = require("cors");
-const { initializeApp, applicationDefault } = require("firebase-admin/app");
-const {
-  getFirestore,
-  Timestamp,
-  FieldValue,
-} = require("firebase-admin/firestore");
-
+const connection = require("./settings/sql_connection");
+const auth = require("firebase-admin/auth");
+const db = require("./settings/firebase_setup");
 const PORT = 8000;
-
-// Setting up firebase and sql
-initializeApp({
-  credential: applicationDefault(),
-});
-
-const db = getFirestore();
-
-const connection = mysql.createConnection({
-  user: "zax",
-  password: "1234",
-  host: "localhost",
-  database: "antiproxyDB",
-});
-
-connection.connect();
-connection.on("error", (err) => {
-  console.log(err);
-});
 
 // Initializing Server
 const app = express();
@@ -53,6 +28,7 @@ app.post("/register-new-teacher", (req, res) => {
     ) {
       auth
         .getAuth()
+
         .createUser({
           email: creds.teacher_email,
           phoneNumber: creds.teacher_phone,
@@ -73,15 +49,24 @@ app.post("/register-new-teacher", (req, res) => {
             .then(() => {
               res.status(200).json({
                 code: 200,
-                message: "Teacher Created and Stored Successfully!",
+                message:
+                  "Account Created Successfully. Please contact admin for approval. ",
               });
             })
             .catch((e) => {
-              /*
-                ROLL BACK PENDING
-            */
               console.log("Error Adding to Database time to roll back");
-              res.status(400).json({ err: "System error: ERMERRWHLADDTOFS" });
+              auth
+                .getAuth()
+                .deleteUser(userRecord.uid)
+                .then(() => {
+                  const deldoc = db.collection("pending").doc(userRecord.uid);
+                  deldoc.delete().then(() => {
+                    console.log("Teacher Account ROLLBACKED");
+                  });
+                });
+              res.status(400).json({
+                err: "System error: Couldn't Create Account at this time",
+              });
             });
         })
         .catch((error) => {
@@ -167,13 +152,13 @@ app.post("/add-new-student", (req, res) => {
       .then((userRecord) => {
         console.log("Successfully created new user:", userRecord.uid);
         connection
-          .query(
-            `INSERT INTO students VALUES (${userRecord.uid}, ${
-              studInfo.reg_no
-            }, ${studInfo.name}, ${studInfo.degree}, ${
-              studInfo.reg_no + "@cust.pk"
-            });`
-          )
+          .query(`INSERT INTO students VALUES (?, ?, ?, ?, ?);`, [
+            userRecord.uid,
+            studInfo.reg_no,
+            studInfo.name,
+            studInfo.degree,
+            studInfo.reg_no + "@cust.pk",
+          ])
           .on("error", (e) => {
             console.log(e);
             auth
