@@ -98,7 +98,7 @@ app.post("/register-new-teacher", (req, res) => {
     res.status(400).json({ err: "Empty Credentials" });
   }
 });
-app.post("/teacher-action", (req, res) => {
+app.post("/teacher-action", (req, resp) => {
   const pending = req.body;
   if (pending) {
     if (pending.action == "approved") {
@@ -122,14 +122,12 @@ app.post("/teacher-action", (req, res) => {
         .doc(pending.teacher.teacher_uid)
         .delete()
         .then((res) => {
-          res.status(200).json({
+          resp.status(200).json({
             message: "teacher approved",
           });
         })
         .catch((e) => {
-          res.status(400).json({
-            err: "teacher not approved",
-          });
+          throw e;
         });
     } else {
       db.collection("pending")
@@ -141,14 +139,18 @@ app.post("/teacher-action", (req, res) => {
             .deleteUser(pending.teacher.teacher_uid)
             .then(() => {
               console.log("Successfully Teacher disapproved");
+
+              resp.status(200).json({
+                msg: "teacher  disapproved",
+              });
             })
             .catch((error) => {
-              console.log("Error deleting user:", error);
+              throw error;
             });
         });
     }
   } else {
-    res.status(400).json({
+    resp.status(400).json({
       err: "No Action Provided",
     });
   }
