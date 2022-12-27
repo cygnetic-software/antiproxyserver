@@ -180,6 +180,10 @@ app.post("/add-new-student", (req, res) => {
     res.status(400).json({ err: "Info Not provided" });
   }
 });
+
+app.post("/auth-admin", (req, res) => {});
+app.post("/auth-teacher", (req, res) => {});
+app.post("/auth-student", (req, res) => {});
 //Running Server
 app.listen(PORT, function (err) {
   if (err) console.log(err);
