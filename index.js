@@ -140,10 +140,11 @@ app.post("/teacher-action", (req, resp) => {
     });
   }
 });
-app.post("/add-new-student", (req, res) => {
+app.post("/add-new-student", (req, resp) => {
   const studInfo = req.body;
   if (studInfo) {
-    getAuth()
+    auth
+      .getAuth()
       .createUser({
         email: studInfo.reg_no + "@cust.pk",
         password: studInfo.password,
@@ -170,14 +171,15 @@ app.post("/add-new-student", (req, res) => {
               .catch((error) => {
                 console.log("Error deleting user:", error);
               });
-            res.status(500).json({ err: "Error Adding Student!" });
+            resp.status(500).json({ err: "Error Adding Student!" });
           });
+        resp.status(400).json({ err: "Added Student!" });
       })
       .catch((error) => {
         console.log("Error creating new user:", error);
       });
   } else {
-    res.status(400).json({ err: "Info Not provided" });
+    resp.status(400).json({ err: "Info Not provided" });
   }
 });
 

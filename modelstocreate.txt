@@ -17,3 +17,11 @@ teacher={
     teacher_password
     teacher_uid
 }
+
+
+student_req_body={
+    reg_no
+    name
+    degree
+    password
+}
