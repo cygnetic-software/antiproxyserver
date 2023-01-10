@@ -88,12 +88,13 @@ app.post("/teacher-action", (req, resp) => {
   if (pending) {
     if (pending.action == "approved") {
       connection.query(
-        `INSERT INTO teachers VALUES (?, ?, ?, ?);`,
+        `INSERT INTO teachers VALUES (?, ?, ?, ?, ?);`,
         [
           pending.teacher.teacher_uid,
           pending.teacher.teacher_name,
           pending.teacher.teacher_email,
           pending.teacher.teacher_phone,
+          pending.teacher.teacher_password,
         ],
         (err, res) => {
           if (err) {
@@ -184,7 +185,31 @@ app.post("/add-new-student", (req, resp) => {
 });
 
 app.post("/auth-admin", (req, res) => {});
-app.post("/auth-teacher", (req, res) => {});
+app.post("/auth-teacher", (req, res) => {
+  const data = req.body;
+  console.log(data);
+  connection.query(
+    `SELECT teacher_id FROM teachers where teacher_email = '${data.email}' and teacher_password = '${data.password}'`,
+    (err, result) => {
+      if (err) {
+        res.status(400).json({
+          err: "Invalid Credentials",
+        });
+      }
+      auth
+        .getAuth()
+        .createCustomToken(result[0].teacher_id)
+        .then((customToken) => {
+          res.status(200).json({ msg: "Success", token: customToken });
+        })
+        .catch((error) => {
+          res.status(500).json({
+            err: "Custom Token Generation Error",
+          });
+        });
+    }
+  );
+});
 app.post("/auth-student", (req, res) => {});
 //Running Server
 app.listen(PORT, function (err) {
