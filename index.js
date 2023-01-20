@@ -7,7 +7,9 @@ const addStudentRouter = require("./routes/AddNewStudent/add-student.route");
 const authAdminRouter = require("./routes/AuthenticateAdmin/auth-admin.route");
 const authTeacherRouter = require("./routes/AuthenticateTeacher/auth-teacher.route");
 const authStudentRouter = require("./routes/AuthenticateStudent/auth-student.route");
+const retrieveTeacherLecturesRouter = require("./routes/RetrieveLectures/retrieve-lecture.route");
 
+// PORT
 const PORT = 8000;
 
 // Initializing Server
@@ -18,14 +20,16 @@ const router = express.Router();
 app.use(express.json());
 app.use(cors());
 
-//Requests
+//Routers
 router.use("/register-new-teacher", teacherRouter);
 router.use("/teacher-action", teacherActionRouter);
 router.use("/add-new-student", addStudentRouter);
 router.use("/auth-admin", authAdminRouter);
 router.use("/auth-teacher", authTeacherRouter);
 router.use("/auth-student", authStudentRouter);
+router.use("/lectures", retrieveTeacherLecturesRouter);
 
+// UseRoutes
 app.use("/", router);
 //Running Server
 app.listen(PORT, function (err) {

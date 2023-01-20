@@ -1,0 +1,6 @@
+This query is selecting all columns (indicated by the *) from the lectures table (alias l) and joining it with the courses table (alias c) on the course_code column. The join is necessary in order to retrieve the course_name column from the courses table, which is not present in the lectures table. The query is also filtered by the teacher_id column in the lectures table, where the teacher_id must match the provided parameter (indicated by the ?).
+
+SELECT l.*, c.course_name: This line selects all columns from the lectures table (alias l) and the course_name column from the courses table (alias c)
+FROM lectures l: This line specifies the table that is being selected from, in this case, it is the lectures table and it is given an alias l
+JOIN courses c ON l.course_code = c.course_code: This line is joining the courses table (alias c) to the lectures table (alias l) on the course_code column. The ON keyword specifies the column on which the tables are being joined. This join allows to retrieve the course_name column from the courses table, which is not present in the lectures table.
+WHERE teacher_id = ?: This line is specifying a filter on the query. It is checking for a match in the teacher_id column in the lectures table with the provided parameter (indicated by the ?).
