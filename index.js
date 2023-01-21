@@ -8,6 +8,8 @@ const authAdminRouter = require("./routes/AuthenticateAdmin/auth-admin.route");
 const authTeacherRouter = require("./routes/AuthenticateTeacher/auth-teacher.route");
 const authStudentRouter = require("./routes/AuthenticateStudent/auth-student.route");
 const retrieveTeacherLecturesRouter = require("./routes/RetrieveLectures/retrieve-lecture.route");
+const startDigitalClassRouter = require("./routes/DigitalClass/start-digital-class.route");
+const stopDigitalClassRouter = require("./routes/DigitalClass/stop-digital-class.route");
 
 // PORT
 const PORT = 8000;
@@ -28,6 +30,9 @@ router.use("/auth-admin", authAdminRouter);
 router.use("/auth-teacher", authTeacherRouter);
 router.use("/auth-student", authStudentRouter);
 router.use("/lectures", retrieveTeacherLecturesRouter);
+
+router.use("/start-digital-class", startDigitalClassRouter);
+router.use("/stop-digital-class", stopDigitalClassRouter);
 
 // UseRoutes
 app.use("/", router);
