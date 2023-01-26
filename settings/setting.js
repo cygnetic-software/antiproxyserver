@@ -14,8 +14,8 @@ initializeApp({
 const db = getFirestore();
 
 const connection = mysql.createConnection({
-  user: "zax",
-  password: "1234",
+  user: "root",
+  password: "",
   host: "localhost",
   database: "antiproxyDB",
 });
