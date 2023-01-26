@@ -8,4 +8,4 @@ export GOOGLE_APPLICATION_CREDENTIALS="/Users/zax/Desktop/CODE/react/testserver2
 
 
 shell command iMac
-export GOOGLE_APPLICATION_CREDENTIALS="/Users/zax/Documents/GitHub/apbserver/antiproxy-7bb3f-firebase-adminsdk-6u4lx-1b19996c5e.json
+export GOOGLE_APPLICATION_CREDENTIALS="/Users/zax/Documents/GitHub/apbserver/antiproxy-7bb3f-firebase-adminsdk-6u4lx-1b19996c5e.json"
