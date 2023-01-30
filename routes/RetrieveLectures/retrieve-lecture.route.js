@@ -1,4 +1,5 @@
 const express = require("express");
+const lecture = require("../../model/lecture.model");
 const router = express.Router();
 const { connection, auth, db } = require("../../settings/setting");
 
@@ -11,7 +12,8 @@ router.post("/", (req, res) => {
 
   connection.query(query, [teacherID], (err, results) => {
     if (err) throw err;
-    res.status(200).json({ msg: results });
+    const lectures = new lecture(results);
+    res.status(200).json({ msg: lectures.getAllLectures() });
   });
 });
 module.exports = router;

@@ -1,9 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const qrcode = require("qrcode");
-const crypto = require("crypto");
 const { connection } = require("../../settings/setting");
-
+const crypto = require("crypto");
+const qr = require("../../model/qr.model");
 function generateRandomString(length) {
   const charset =
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -29,9 +28,8 @@ router.post("/:lectureId", (req, res) => {
       console.error(err);
       return;
     }
-    qrcode.toDataURL(code_id, (err, url) => {
-      res.status(200).json({ data: results, qrcode: url, code: code_id });
-    });
+    const Qr = new qr(code_id);
+    Qr.generateQR(results, lecture_id, res);
   });
 });
 

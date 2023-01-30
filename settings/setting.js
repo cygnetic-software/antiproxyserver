@@ -82,6 +82,17 @@ connection.connect((err) => {
     FOREIGN KEY (lecture_id) REFERENCES lectures(lecture_id)
   )`
   );
+
+  createTableIfNotExists(
+    "Qr",
+    `(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    lecture_id INT NOT NULL,
+    qr_code VARCHAR(255) NOT NULL,
+    date DATE NOT NULL,
+    FOREIGN KEY (lecture_id) REFERENCES lectures(lecture_id)
+    )`
+  );
 });
 
 module.exports = { connection, db, auth };
