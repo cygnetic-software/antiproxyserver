@@ -93,6 +93,16 @@ connection.connect((err) => {
     FOREIGN KEY (lecture_id) REFERENCES lectures(lecture_id)
     )`
   );
+
+  createTableIfNotExists(
+    "todos",
+    `(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    task VARCHAR(255) NOT NULL,
+    date VARCHAR(255) NOT NULL
+  );`
+  );
 });
 
 module.exports = { connection, db, auth };
