@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reset Password</title>
+  </head>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+    .main {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #fff9f9;
+    }
+    .main-form {
+      width: 450px;
+      border-radius: 5px;
+      height: 300px;
+      padding: 10px;
+    }
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      margin-bottom: 10px;
+    }
+    .error {
+      font-size: 10px;
+      color: red;
+    }
+  </style>
+  <body>
+    <div class="main">
+      <div class="main-form">
+        <h3 style="text-align: center">Reset Password!</h3>
+        <div>
+          <span id="passErr" class="error"></span>
+          <div class="row">
+            <label for="password">Enter New Password: </label>
+            <input type="password" id="password" />
+          </div>
+
+          <span id="cpassErr" class="error"></span>
+          <div class="row">
+            <label for="cpassword">Confirm New Password: </label>
+            <input type="password" id="cpassword" />
+          </div>
+          <div>
+            <button style="width: 100%" onclick="submitHandler()">
+              Submit
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    const passwordInp = document.querySelector("#password");
+    const cpasswordInp = document.querySelector("#cpassword");
+    const passErrSpan = document.querySelector("#passErr");
+    const cpassErrSpan = document.querySelector("#cpassErr");
+
+    var passwordErr = "";
+    var cpasswordErr = "";
+
+    const submitHandler = () => {
+      let password = passwordInp.value;
+      let cpassword = cpasswordInp.value;
+
+      if (password.length === 0) {
+        passwordErr = "Password field cannot be empty.";
+      } else if (password.length < 8) {
+        passwordErr = "Password should be greater then 8 characters";
+      } else {
+        passwordErr = "";
+      }
+      passErrSpan.textContent = passwordErr;
+
+      if (cpassword.length === 0) {
+        cpasswordErr = "Password field cannot be empty.";
+      } else if (cpassword.length < 8) {
+        cpasswordErr = "Password should be greater then 8 characters";
+      } else if (cpassword !== password) {
+        cpasswordErr = "Passwords donot match!";
+      } else {
+        cpasswordErr = "";
+      }
+      cpassErrSpan.textContent = cpasswordErr;
+
+      if (!passwordErr && !cpasswordErr) {
+        axios
+          .post("http://localhost:8000/")
+          .then((res) => {
+            console.log(res);
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      }
+    };
+  </script>
+</html>

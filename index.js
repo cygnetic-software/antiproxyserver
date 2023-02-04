@@ -12,6 +12,8 @@ const startDigitalClassRouter = require("./routes/DigitalClass/start-digital-cla
 const stopDigitalClassRouter = require("./routes/DigitalClass/stop-digital-class.route");
 const adminTodosRouter = require("./routes/AdminTodos/admin-todos.route");
 
+const path = require("path");
+
 // PORT
 const PORT = 8000;
 
@@ -32,12 +34,15 @@ router.use("/auth-teacher", authTeacherRouter);
 router.use("/auth-student", authStudentRouter);
 router.use("/lectures", retrieveTeacherLecturesRouter);
 router.use("/todos", adminTodosRouter);
-
 router.use("/start-digital-class", startDigitalClassRouter);
 router.use("/stop-digital-class", stopDigitalClassRouter);
 
 // UseRoutes
 app.use("/", router);
+app.get("/reset-student-password", (req, res) => {
+  res.sendFile(path.join(__dirname, "pages", "resetstudentpass.html"));
+});
+app.get("/reset-teacher-password", () => {});
 //Running Server
 app.listen(PORT, function (err) {
   if (err) console.log(err);
