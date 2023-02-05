@@ -12,6 +12,7 @@ const startDigitalClassRouter = require("./routes/DigitalClass/start-digital-cla
 const stopDigitalClassRouter = require("./routes/DigitalClass/stop-digital-class.route");
 const adminTodosRouter = require("./routes/AdminTodos/admin-todos.route");
 const recoverPasswordRouter = require("./routes/RecoverPassword/recoverPasswordRouter");
+const updatePasswordRouter = require("./routes/UpdatePassword/update-password.route");
 
 const path = require("path");
 
@@ -38,13 +39,11 @@ router.use("/todos", adminTodosRouter);
 router.use("/start-digital-class", startDigitalClassRouter);
 router.use("/stop-digital-class", stopDigitalClassRouter);
 router.use("/recover", recoverPasswordRouter);
+router.use("/update-password", updatePasswordRouter);
 
 // UseRoutes
 app.use("/", router);
-app.get("/reset-student-password", (req, res) => {
-  res.sendFile(path.join(__dirname, "pages", "resetstudentpass.html"));
-});
-app.get("/reset-teacher-password", () => {});
+
 //Running Server
 app.listen(PORT, function (err) {
   if (err) console.log(err);
