@@ -11,6 +11,7 @@ const retrieveTeacherLecturesRouter = require("./routes/RetrieveLectures/retriev
 const startDigitalClassRouter = require("./routes/DigitalClass/start-digital-class.route");
 const stopDigitalClassRouter = require("./routes/DigitalClass/stop-digital-class.route");
 const adminTodosRouter = require("./routes/AdminTodos/admin-todos.route");
+const recoverPasswordRouter = require("./routes/RecoverPassword/recoverPasswordRouter");
 
 const path = require("path");
 
@@ -36,6 +37,7 @@ router.use("/lectures", retrieveTeacherLecturesRouter);
 router.use("/todos", adminTodosRouter);
 router.use("/start-digital-class", startDigitalClassRouter);
 router.use("/stop-digital-class", stopDigitalClassRouter);
+router.use("/recover", recoverPasswordRouter);
 
 // UseRoutes
 app.use("/", router);

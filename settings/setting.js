@@ -1,3 +1,4 @@
+require("dotenv").config();
 const mysql = require("mysql");
 const auth = require("firebase-admin/auth");
 const { initializeApp, applicationDefault } = require("firebase-admin/app");
@@ -6,11 +7,37 @@ const {
   Timestamp,
   FieldValue,
 } = require("firebase-admin/firestore");
+const nodemailer = require("nodemailer");
 
 initializeApp({
   credential: applicationDefault(),
 });
 
+const actionCodeSettings = {
+  // URL you want to redirect back to. The domain (www.example.com) for
+  // this URL must be whitelisted in the Firebase Console.
+  url: "http://localhost:8000/recover-student-password",
+  // This must be true for email link sign-in.
+  handleCodeInApp: true,
+  iOS: {
+    bundleId: "com.example.antiproxystudent",
+  },
+  android: {
+    packageName: "com.example.antiproxystudent",
+    installApp: true,
+    minimumVersion: "12",
+  },
+  // FDL custom domain.
+  dynamicLinkDomain: "antiproxy.page.link",
+};
+
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.email,
+    pass: process.env.password,
+  },
+});
 const db = getFirestore();
 
 const connection = mysql.createConnection({
@@ -105,4 +132,4 @@ connection.connect((err) => {
   );
 });
 
-module.exports = { connection, db, auth };
+module.exports = { connection, db, auth, transporter, actionCodeSettings };
