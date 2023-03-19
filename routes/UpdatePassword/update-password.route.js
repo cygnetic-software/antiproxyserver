@@ -43,7 +43,7 @@ router.post("/student", (req, res) => {
 router.post("/teacher", (req, res) => {
   const { email, password } = req.body;
   const sql = "SELECT * FROM teachers WHERE teacher_email = ?";
-  connection.query(sqt, [email], (err, users) => {
+  connection.query(sql, [email], (err, users) => {
     if (err) {
       console.log(err);
       throw err;

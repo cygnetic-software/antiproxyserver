@@ -39,6 +39,8 @@ router.post("/student", (req, res) => {
             console.log(e);
             res.status(400).json({ message: "Error" });
           });
+      } else {
+        res.status(404).json({ message: "User not found" });
       }
     }
   );
@@ -47,7 +49,7 @@ router.post("/teacher", (req, res) => {
   console.log("recovering teacher");
   const { email } = req.body;
   connection.query(
-    "SELECT * FROM teacher WHERE email = ?",
+    "SELECT * FROM teachers WHERE teacher_email = ?",
     [email],
     (err, result) => {
       if (err) {
@@ -63,7 +65,7 @@ router.post("/teacher", (req, res) => {
           template_params: {
             email: email,
             link: `http://localhost:3000/reset-password-teacher?email=${email}`,
-            name: result[0].name,
+            name: result[0].teacher_name,
           },
           accessToken: "59qXHnKaCRrNH_D8FV7xU",
         };
@@ -77,6 +79,8 @@ router.post("/teacher", (req, res) => {
             console.log(e);
             res.status(400).json({ message: "Error" });
           });
+      } else {
+        res.status(404).json({ message: "User not found" });
       }
     }
   );
