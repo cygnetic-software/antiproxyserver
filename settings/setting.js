@@ -2,13 +2,28 @@ require("dotenv").config();
 const express = require("express");
 const admin = require("firebase-admin");
 const nodemailer = require("nodemailer");
+const https = require("https");
+const fs = require("fs");
 
 const { initializeApp, applicationDefault } = require("firebase-admin/app");
 
 const { getFirestore } = require("firebase-admin/firestore");
 
 const app = express();
-const server = require("http").Server(app);
+
+// Create https server
+const server = https.createServer(
+  {
+    key: fs.readFileSync(
+      "/etc/letsencrypt/live/api.antiproxy.cygnetic.net/privkey.pem"
+    ),
+    cert: fs.readFileSync(
+      "/etc/letsencrypt/live/api.antiproxy.cygnetic.net/fullchain.pem"
+    ),
+  },
+  app
+);
+
 const io = require("socket.io")(server, {
   cors: { origin: "*" },
 });
@@ -20,7 +35,7 @@ initializeApp({
 const actionCodeSettings = {
   // URL you want to redirect back to. The domain (www.example.com) for
   // this URL must be whitelisted in the Firebase Console.
-  url: "http://localhost:9000/recover-student-password",
+  url: "http://16.171.135.163:9000/recover-student-password",
   // This must be true for email link sign-in.
   handleCodeInApp: true,
   iOS: {
