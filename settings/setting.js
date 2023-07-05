@@ -14,12 +14,8 @@ const app = express();
 // Create https server
 const server = https.createServer(
   {
-    key: fs.readFileSync(
-      "/etc/letsencrypt/live/api.antiproxy.cygnetic.net/privkey.pem"
-    ),
-    cert: fs.readFileSync(
-      "/etc/letsencrypt/live/api.antiproxy.cygnetic.net/fullchain.pem"
-    ),
+    key: fs.readFileSync("../my_certs/privkey.pem"),
+    cert: fs.readFileSync("../my_certs/fullchain.pem"),
   },
   app
 );
