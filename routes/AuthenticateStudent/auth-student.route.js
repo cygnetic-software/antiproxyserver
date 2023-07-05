@@ -1,45 +1,51 @@
 const express = require("express");
 const router = express.Router();
-const { connection, auth, db } = require("../../settings/setting");
-router.post("/", (req, res) => {
+const { auth, db } = require("../../settings/setting");
+router.post("/", async (req, res) => {
   const data = req.body;
 
   console.log(data);
   if (data.email !== "" && data.password !== "") {
-    connection.query(
-      "SELECT * FROM students WHERE email = ?",
-      [data.email],
-      (err, result) => {
-        if (err) {
-          res.status(500).json({ err: "Internal Server Error" });
-        }
-        if (result.length === 0) {
-          res.status(401).json({ err: "Email does not Exist" });
+    try {
+      const studentsRef = db.collection("students");
+      const snapshot = await studentsRef.where("email", "==", data.email).get();
+      if (snapshot.empty) {
+        res.status(401).json({ err: "Email does not Exist" });
+      } else {
+        let userData;
+        snapshot.docs.forEach((doc) => {
+          const id = doc.id;
+          userData = { stud_id: id, ...doc.data() };
+        });
+        console.log(userData);
+
+        if (userData.password !== data.password) {
+          res.status(401).json({ err: "Invalid password" });
         } else {
-          if (result[0].password !== data.password) {
-            res.status(401).json({ err: "Invalid password" });
-          } else {
-            auth
-              .getAuth()
-              .createCustomToken(result[0].stud_id)
-              .then((customToken) => {
-                res.status(200).json({
-                  msg: "Success",
-                  token: customToken,
-                  userdata: result[0],
-                });
-              })
-              .catch((error) => {
-                res.status(500).json({
-                  err: error.toString(),
-                });
+          auth
+
+            .createCustomToken(userData.stud_id)
+            .then((customToken) => {
+              res.status(200).json({
+                msg: "Success",
+                token: customToken,
+                userdata: userData,
               });
-          }
+            })
+            .catch((error) => {
+              res.status(500).json({
+                err: error.toString(),
+              });
+            });
         }
       }
-    );
-  } else {
-    res.status(400).json({ err: "Empty input fields" });
+    } catch (err) {
+      console.log(err);
+      res
+        .status(500)
+        .json({ err: "Internal Server Error: 500", actualErr: err });
+    }
   }
 });
+
 module.exports = router;

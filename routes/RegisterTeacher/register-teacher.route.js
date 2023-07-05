@@ -16,7 +16,6 @@ router.post("/", (req, res) => {
       creds.teacher_password
     ) {
       auth
-        .getAuth()
 
         .createUser({
           email: creds.teacher_email,
@@ -44,15 +43,12 @@ router.post("/", (req, res) => {
             })
             .catch((e) => {
               console.log("Error Adding to Database time to roll back");
-              auth
-                .getAuth()
-                .deleteUser(userRecord.uid)
-                .then(() => {
-                  const deldoc = db.collection("pending").doc(userRecord.uid);
-                  deldoc.delete().then(() => {
-                    console.log("Teacher Account ROLLBACKED");
-                  });
+              auth.deleteUser(userRecord.uid).then(() => {
+                const deldoc = db.collection("pending").doc(userRecord.uid);
+                deldoc.delete().then(() => {
+                  console.log("Teacher Account ROLLBACKED");
                 });
+              });
               res.status(400).json({
                 err: "System error: Couldn't Create Account at this time",
               });

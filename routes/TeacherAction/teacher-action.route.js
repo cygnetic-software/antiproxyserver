@@ -1,58 +1,47 @@
 const express = require("express");
 const router = express.Router();
-const { connection, auth, db } = require("../../settings/setting");
+const { auth, db } = require("../../settings/setting");
 
-router.post("/", (req, resp) => {
+router.post("/", async (req, resp) => {
   const pending = req.body;
   if (pending) {
-    if (pending.action == "approved") {
-      connection.query(
-        `INSERT INTO teachers VALUES (?, ?, ?, ?, ?);`,
-        [
-          pending.teacher.teacher_uid,
-          pending.teacher.teacher_name,
-          pending.teacher.teacher_email,
-          pending.teacher.teacher_phone,
-          pending.teacher.teacher_password,
-        ],
-        (err, res) => {
-          if (err) {
-            console.log(err);
-            res.status(500).json({ err: "Error approving teacher!" });
-            throw err;
-          }
-        }
-      );
-      db.collection("pending")
-        .doc(pending.teacher.teacher_uid)
-        .delete()
-        .then((res) => {
-          resp.status(200).json({
-            message: "teacher approved",
-          });
-        })
-        .catch((e) => {
-          throw e;
+    if (pending.action === "approved") {
+      const teacherRef = db
+        .collection("teachers")
+        .doc(pending.teacher.teacher_uid);
+      const teacherData = {
+        teacher_name: pending.teacher.teacher_name,
+        teacher_email: pending.teacher.teacher_email,
+        teacher_phone: pending.teacher.teacher_phone,
+        teacher_password: pending.teacher.teacher_password,
+      };
+      try {
+        await teacherRef.set(teacherData);
+        await db
+          .collection("pending")
+          .doc(pending.teacher.teacher_uid)
+          .delete();
+        resp.status(200).json({
+          message: "teacher approved",
         });
+      } catch (e) {
+        console.error(e);
+        resp.status(500).json({ err: "Error approving teacher!" });
+      }
     } else {
-      db.collection("pending")
-        .doc(pending.teacher.teacher_uid)
-        .delete()
-        .then((res) => {
-          auth
-            .getAuth()
-            .deleteUser(pending.teacher.teacher_uid)
-            .then(() => {
-              console.log("Successfully Teacher disapproved");
-
-              resp.status(200).json({
-                msg: "teacher  disapproved",
-              });
-            })
-            .catch((error) => {
-              throw error;
-            });
+      try {
+        await db
+          .collection("pending")
+          .doc(pending.teacher.teacher_uid)
+          .delete();
+        await auth.deleteUser(pending.teacher.teacher_uid);
+        resp.status(200).json({
+          msg: "teacher disapproved",
         });
+      } catch (error) {
+        console.error(error);
+        resp.status(500).json({ err: "Error disapproving teacher!" });
+      }
     }
   } else {
     resp.status(400).json({

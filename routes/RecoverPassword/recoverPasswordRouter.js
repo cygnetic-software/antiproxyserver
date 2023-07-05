@@ -2,87 +2,82 @@ require("dotenv").config();
 const express = require("express");
 const router = express.Router();
 const axios = require("axios");
+const { db } = require("../../settings/setting");
 
-const { connection, auth } = require("../../settings/setting");
-
-router.post("/student", (req, res) => {
+router.post("/student", async (req, res) => {
   console.log("recovering student");
   const { email } = req.body;
-  connection.query(
-    "SELECT * FROM students WHERE email = ?",
-    [email],
-    (err, result) => {
-      if (err) {
-        throw err;
-      }
 
-      if (result.length !== 0) {
-        // Construct password reset email template, embed the link and send
-        const data = {
-          service_id: "service_m1v4l14",
-          template_id: "template_dmfukbs",
-          user_id: "xp-KMU60lbVqCzHoH",
-          template_params: {
-            email: email,
-            link: `http://localhost:3000/reset-password?email=${email}`,
-            name: result[0].name,
-          },
-          accessToken: "59qXHnKaCRrNH_D8FV7xU",
-        };
-        axios
-          .post("https://api.emailjs.com/api/v1.0/email/send", data)
-          .then((e) => {
-            console.log("Email Sent");
-            res.status(200).json({ message: "Success" });
-          })
-          .catch((e) => {
-            console.log(e);
-            res.status(400).json({ message: "Error" });
-          });
-      } else {
-        res.status(404).json({ message: "User not found" });
-      }
-    }
-  );
+  const studentsRef = db.collection("students");
+  const snapshot = await studentsRef.where("email", "==", email).get();
+
+  if (snapshot.empty) {
+    console.log("No matching documents.");
+    res.status(404).json({ message: "User not found" });
+    return;
+  }
+
+  snapshot.forEach((doc) => {
+    const data = {
+      service_id: "service_m1v4l14",
+      template_id: "template_dmfukbs",
+      user_id: "xp-KMU60lbVqCzHoH",
+      template_params: {
+        email: email,
+        link: `http://localhost:3000/reset-password?email=${email}`,
+        name: doc.data().name,
+      },
+      accessToken: "59qXHnKaCRrNH_D8FV7xU",
+    };
+    axios
+      .post("https://api.emailjs.com/api/v1.0/email/send", data)
+      .then((e) => {
+        console.log("Email Sent");
+        res.status(200).json({ message: "Success" });
+      })
+      .catch((e) => {
+        console.log(e);
+        res.status(400).json({ message: "Error" });
+      });
+  });
 });
-router.post("/teacher", (req, res) => {
+
+router.post("/teacher", async (req, res) => {
   console.log("recovering teacher");
   const { email } = req.body;
-  connection.query(
-    "SELECT * FROM teachers WHERE teacher_email = ?",
-    [email],
-    (err, result) => {
-      if (err) {
-        throw err;
-      }
 
-      if (result.length !== 0) {
-        // Construct password reset email template, embed the link and send
-        const data = {
-          service_id: "service_m1v4l14",
-          template_id: "template_dmfukbs",
-          user_id: "xp-KMU60lbVqCzHoH",
-          template_params: {
-            email: email,
-            link: `http://localhost:3000/reset-password-teacher?email=${email}`,
-            name: result[0].teacher_name,
-          },
-          accessToken: "59qXHnKaCRrNH_D8FV7xU",
-        };
-        axios
-          .post("https://api.emailjs.com/api/v1.0/email/send", data)
-          .then((e) => {
-            console.log("Email Sent");
-            res.status(200).json({ message: "Success" });
-          })
-          .catch((e) => {
-            console.log(e);
-            res.status(400).json({ message: "Error" });
-          });
-      } else {
-        res.status(404).json({ message: "User not found" });
-      }
-    }
-  );
+  const teachersRef = db.collection("teachers");
+  const snapshot = await teachersRef.where("teacher_email", "==", email).get();
+
+  if (snapshot.empty) {
+    console.log("No matching documents.");
+    res.status(404).json({ message: "User not found" });
+    return;
+  }
+
+  snapshot.forEach((doc) => {
+    const data = {
+      service_id: "service_m1v4l14",
+      template_id: "template_dmfukbs",
+      user_id: "xp-KMU60lbVqCzHoH",
+      template_params: {
+        email: email,
+        link: `http://localhost:3000/reset-password-teacher?email=${email}`,
+        name: doc.data().teacher_name,
+      },
+      accessToken: "59qXHnKaCRrNH_D8FV7xU",
+    };
+    axios
+      .post("https://api.emailjs.com/api/v1.0/email/send", data)
+      .then((e) => {
+        console.log("Email Sent");
+        res.status(200).json({ message: "Success" });
+      })
+      .catch((e) => {
+        console.log(e);
+        res.status(400).json({ message: "Error" });
+      });
+  });
 });
+
 module.exports = router;

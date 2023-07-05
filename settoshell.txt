@@ -9,3 +9,7 @@ export GOOGLE_APPLICATION_CREDENTIALS="/Users/zax/Desktop/CODE/react/testserver2
 
 shell command iMac
 export GOOGLE_APPLICATION_CREDENTIALS="/Users/zax/Desktop/CODE/AntiProxyFYP/antiproxyserver/antiproxy-7bb3f-firebase-adminsdk-6u4lx-1b19996c5e.json"
+
+shell command PC
+
+$env:GOOGLE_APPLICATION_CREDENTIALS="C:\Users\farax\OneDrive\Desktop\AntiProxyFYP\antiproxyserver\antiproxy-7bb3f-firebase-adminsdk-6u4lx-1b19996c5e.json"
