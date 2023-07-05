@@ -4,6 +4,7 @@ const admin = require("firebase-admin");
 const nodemailer = require("nodemailer");
 const https = require("https");
 const fs = require("fs");
+const path = require("path");
 
 const { initializeApp, applicationDefault } = require("firebase-admin/app");
 
@@ -14,8 +15,10 @@ const app = express();
 // Create https server
 const server = https.createServer(
   {
-    key: fs.readFileSync("../my_certs/privkey.pem"),
-    cert: fs.readFileSync("../my_certs/fullchain.pem"),
+    key: fs.readFileSync(path.join(__dirname, "..", "my_certs", "privkey.pem")),
+    cert: fs.readFileSync(
+      path.join(__dirname, "..", "my_certs", "fullchain.pem")
+    ),
   },
   app
 );
