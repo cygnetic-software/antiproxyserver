@@ -19,7 +19,7 @@ const reportsRoute = require("./routes/ReportStudent/reportStudent.route");
 const path = require("path");
 
 // PORT
-const PORT = 9000;
+const PORT = 443;
 
 // Initializing Server
 const router = express.Router();
