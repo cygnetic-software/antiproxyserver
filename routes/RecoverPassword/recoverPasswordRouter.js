@@ -20,14 +20,14 @@ router.post("/student", async (req, res) => {
   snapshot.forEach((doc) => {
     const data = {
       service_id: "service_m1v4l14",
-      template_id: "template_dmfukbs",
-      user_id: "xp-KMU60lbVqCzHoH",
+      template_id: "template_sel5chj",
+      user_id: "UQpyv9dfA3SdMdu5N",
       template_params: {
         email: email,
-        link: `http://localhost:3000/reset-password?email=${email}`,
+        link: `https://admin-antiproxy.web.app/reset-password?email=${email}`,
         name: doc.data().name,
       },
-      accessToken: "59qXHnKaCRrNH_D8FV7xU",
+      accessToken: "d4X3JUOntrEroxblZU1jU",
     };
     axios
       .post("https://api.emailjs.com/api/v1.0/email/send", data)
@@ -58,14 +58,14 @@ router.post("/teacher", async (req, res) => {
   snapshot.forEach((doc) => {
     const data = {
       service_id: "service_m1v4l14",
-      template_id: "template_dmfukbs",
-      user_id: "xp-KMU60lbVqCzHoH",
+      template_id: "template_sel5chj",
+      user_id: "UQpyv9dfA3SdMdu5N",
       template_params: {
         email: email,
-        link: `http://localhost:3000/reset-password-teacher?email=${email}`,
+        link: `https://admin-antiproxy.web.app/reset-password-teacher?email=${email}`,
         name: doc.data().teacher_name,
       },
-      accessToken: "59qXHnKaCRrNH_D8FV7xU",
+      accessToken: "d4X3JUOntrEroxblZU1jU",
     };
     axios
       .post("https://api.emailjs.com/api/v1.0/email/send", data)
@@ -75,7 +75,7 @@ router.post("/teacher", async (req, res) => {
       })
       .catch((e) => {
         console.log(e);
-        res.status(400).json({ message: "Error" });
+        res.status(400).json({ message: "Error", actualErr: e });
       });
   });
 });

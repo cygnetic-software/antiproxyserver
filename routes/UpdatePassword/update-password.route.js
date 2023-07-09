@@ -18,8 +18,7 @@ router.post("/student", async (req, res) => {
   snapshot.forEach((doc) => {
     const student = doc.data();
     auth
-      .gethAuth()
-      .updateUser(student.stud_id, { password: password })
+      .updateUser(doc.id, { password: password })
       .then(() => {
         doc.ref.update({ password: password });
         res.status(200).json({ message: "Password Updated" });
@@ -46,7 +45,7 @@ router.post("/teacher", async (req, res) => {
     const teacher = doc.data();
     auth
 
-      .updateUser(teacher.teacher_id, { password: password })
+      .updateUser(doc.id, { password: password })
       .then(() => {
         doc.ref.update({ teacher_password: password });
         res.status(200).json({ message: "Password Updated" });

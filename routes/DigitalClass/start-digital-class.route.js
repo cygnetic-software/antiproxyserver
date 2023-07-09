@@ -131,6 +131,25 @@ router.post("/:lectureId", async (req, res) => {
 
         socket.leave(roomId);
       });
+      socket.on("removeException", (data) => {
+        console.log("Call to remove exception student");
+        const { roomId, userId } = data;
+
+        if (classData[roomId].exceptions.has(userId)) {
+          const user = classData[roomId].exceptions.get(userId);
+
+          classData[roomId].exceptions.delete(userId);
+          classData[roomId].attendees.set(userId, user);
+
+          io.to(roomId).emit("exceptionRemoved", {
+            userId,
+            user,
+            attendees: Array.from(classData[roomId].attendees.values()),
+            absentees: Array.from(classData[roomId].absentees.values()),
+            exceptions: Array.from(classData[roomId].exceptions.values()),
+          });
+        }
+      });
     });
 
     res

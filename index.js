@@ -51,20 +51,33 @@ router.use("/update-password", updatePasswordRouter);
 router.get("/get-reports", async (req, res) => {
   try {
     const reportsSnapshot = await db.collection("reports").get();
-    let reports = [];
-    reportsSnapshot.forEach((doc) => {
-      const data = doc.data();
-      reports.push({
-        report_id: doc.id,
-        lecture_id: data.lecture_id,
-        stud_name: data.stud_name,
-        teacher_name: data.teacher_name,
-        reg_no: data.reg_no,
-        report_text: data.report_text,
-        report_time: data.report_time,
-        report_type: data.report_type,
-      });
-    });
+    let reportPromises = [];
+
+    for (let doc of reportsSnapshot.docs) {
+      let reportPromise = async () => {
+        let report = doc.data();
+        let id = doc.id;
+        const teacher = await db
+          .collection("teachers")
+          .doc(report.teacher_id)
+          .get();
+        report.teacher_name = teacher.data().teacher_name; // replace 'name' with the correct field name in your teachers collection
+
+        const student = await db
+          .collection("students")
+          .doc(report.stud_id)
+          .get();
+        report.student_name = student.data().name; // replace 'name' with the correct field name in your students collection
+        report.student_reg_no = student.data().reg_no; // replace 'reg_no' with the correct field name in your students collection
+        report.id = id;
+        return report;
+      };
+
+      reportPromises.push(reportPromise());
+    }
+
+    let reports = await Promise.all(reportPromises);
+
     res.status(200).json(reports);
   } catch (err) {
     console.error(err);

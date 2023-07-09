@@ -38,10 +38,10 @@ const actionCodeSettings = {
   // This must be true for email link sign-in.
   handleCodeInApp: true,
   iOS: {
-    bundleId: "com.example.antiproxystudent",
+    bundleId: "com.cygnetic.antiproxystudent",
   },
   android: {
-    packageName: "com.example.antiproxystudent",
+    packageName: "com.cygnetic.antiproxystudent",
     installApp: true,
     minimumVersion: "12",
   },
